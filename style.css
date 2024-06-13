@@ -64,6 +64,11 @@ ul li {
     user-select: none;
     cursor: pointer;
     position: relative;
+    
+    height: 35px;
+}
+ul li #text {
+    width: 80%;
 }
 
 ul li::before{
@@ -99,6 +104,9 @@ ul li span {
     line-height: 40px;
     text-align: center;
     border-radius: 50%;
+}
+ul li p {
+    font-size: 10px;
 }
 
 ul li span:hover{
