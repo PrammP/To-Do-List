@@ -64,8 +64,8 @@ ul li {
     user-select: none;
     cursor: pointer;
     position: relative;
-    
     height: 35px;
+    margin-top: 10px;
 }
 ul li #text {
     width: 80%;
