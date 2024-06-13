@@ -170,7 +170,7 @@ ul li span.edit:hover {
         margin-right: 10px;
     }
     ul{
-        margin-top: 50px;
+        margin-top: 80px;
     }
     ul li {
         font-size: 13px;
@@ -190,4 +190,22 @@ ul li span.edit:hover {
         font-size: 18px;
         line-height: 30px;
     }
+}
+input[type="date"]::-webkit-datetime-edit {
+    visibility: hidden;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    visibility: visible;
+}
+input[type="date"] {
+    position: relative;
+}
+input[type="date"]::before {
+    content: attr(placeholder);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    pointer-events: none;
 }
