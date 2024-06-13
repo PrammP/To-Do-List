@@ -8,14 +8,15 @@ function addTask() {
   } else {
     let li = document.createElement("li");
     li.innerHTML = inputBox.value;
-    listContainer.appendChild(li);
 
     let dateElement = document.createElement("p");
+    dateElement.classList.add("date-created");
     dateElement.innerHTML = getTodayDate() + getTodayHour();
     li.appendChild(dateElement);
 
     if (deadlineDateInput.value) {
       let remainingDaysElement = document.createElement("p");
+      remainingDaysElement.classList.add("remaining-days");
       remainingDaysElement.innerHTML =
         "Temps restant: " +
         calculateRemainingDays(deadlineDateInput.value) +
@@ -32,6 +33,8 @@ function addTask() {
     spanEdit.innerHTML = "\u270E";
     spanEdit.classList.add("edit");
     li.appendChild(spanEdit);
+
+    listContainer.appendChild(li);
   }
   inputBox.value = "";
   deadlineDateInput.value = "";
@@ -62,43 +65,65 @@ listContainer.addEventListener(
 
 function editTask(li) {
   let currentText = li.childNodes[0].nodeValue;
-  let input = document.createElement("input");
-  input.type = "text";
-  input.value = currentText;
-  input.classList.add("edit-input");
+  let currentDeadline = li.querySelector(".deadline-date")
+    ? li.querySelector(".deadline-date").innerText.replace("Deadline: ", "")
+    : "";
+
+  let inputText = document.createElement("input");
+  inputText.type = "text";
+  inputText.value = currentText;
+  inputText.classList.add("edit-input");
+
+  let inputDate = document.createElement("input");
+  inputDate.type = "date";
+  inputDate.value = currentDeadline;
+  inputDate.classList.add("edit-date-input");
 
   li.innerHTML = "";
-  li.appendChild(input);
-  input.focus();
+  li.appendChild(inputText);
+  li.appendChild(inputDate);
+  inputText.focus();
 
-  input.addEventListener("blur", function () {
-    li.innerHTML = input.value;
-
-    let dateElement = document.createElement("p");
-    dateElement.innerHTML = getTodayDate() + getTodayHour();
-    li.appendChild(dateElement);
-
-    if (deadlineDateInput.value) {
-      let remainingDaysElement = document.createElement("p");
-      remainingDaysElement.innerHTML =
-        "Temps restant: " +
-        calculateRemainingDays(deadlineDateInput.value) +
-        " jours";
-      li.appendChild(remainingDaysElement);
+  inputText.addEventListener("keydown", function () {
+    if (event.key === "Enter" || event.keyCode === 13) {
+      updateTask(li, inputText.value, inputDate.value);
     }
-
-    let spanDelete = document.createElement("span");
-    spanDelete.innerHTML = "\u00d7";
-    spanDelete.classList.add("delete");
-    li.appendChild(spanDelete);
-
-    let spanEdit = document.createElement("span");
-    spanEdit.innerHTML = "\u270E";
-    spanEdit.classList.add("edit");
-    li.appendChild(spanEdit);
-
-    saveData();
   });
+
+  inputDate.addEventListener("keydown", function () {
+    if (event.key === "Enter" || event.keyCode === 13) {
+      updateTask(li, inputText.value, inputDate.value);
+    }
+  });
+}
+
+function updateTask(li, newText, newDeadline) {
+  li.innerHTML = newText;
+
+  let dateElement = document.createElement("p");
+  dateElement.classList.add("date-created");
+  dateElement.innerHTML = getTodayDate() + getTodayHour();
+  li.appendChild(dateElement);
+
+  if (newDeadline) {
+    let remainingDaysElement = document.createElement("p");
+    remainingDaysElement.classList.add("remaining-days");
+    remainingDaysElement.innerHTML =
+      "Temps restant: " + calculateRemainingDays(newDeadline) + " jours";
+    li.appendChild(remainingDaysElement);
+  }
+
+  let spanDelete = document.createElement("span");
+  spanDelete.innerHTML = "\u00d7";
+  spanDelete.classList.add("delete");
+  li.appendChild(spanDelete);
+
+  let spanEdit = document.createElement("span");
+  spanEdit.innerHTML = "\u270E";
+  spanEdit.classList.add("edit");
+  li.appendChild(spanEdit);
+
+  saveData();
 }
 
 function saveData() {
