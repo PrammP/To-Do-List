@@ -130,7 +130,12 @@ ul li span.edit {
 ul li span.edit:hover {
     background: #edeef0;
 }
-
+.finished-date {
+    text-decoration: none;
+    font-weight: bold;
+    color: green;
+  }
+  
 .edit-input {
     width: 100%;
     border: none;

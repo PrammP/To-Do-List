@@ -11,7 +11,7 @@ function addTask() {
 
     let dateElement = document.createElement("p");
     dateElement.classList.add("date-created");
-    dateElement.innerHTML = getTodayDate() + getTodayHour();
+    dateElement.innerHTML = getTodayDate() + " " + getTodayHour();
     li.appendChild(dateElement);
 
     if (deadlineDateInput.value) {
@@ -45,8 +45,7 @@ listContainer.addEventListener(
   "click",
   function (e) {
     if (e.target.tagName === "LI") {
-      e.target.classList.toggle("checked");
-      saveData();
+      toggleTaskCompletion(e.target);
     } else if (
       e.target.tagName === "SPAN" &&
       e.target.classList.contains("delete")
@@ -62,6 +61,25 @@ listContainer.addEventListener(
   },
   false
 );
+
+function toggleTaskCompletion(li) {
+  li.classList.toggle("checked");
+  let finishedElement = li.querySelector(".finished-date");
+  if (li.classList.contains("checked")) {
+    if (!finishedElement) {
+      finishedElement = document.createElement("p");
+      finishedElement.classList.add("finished-date");
+      finishedElement.innerHTML =
+        "Fini le " + getTodayDate() + " à " + getTodayHour();
+      li.appendChild(finishedElement);
+    }
+  } else {
+    if (finishedElement) {
+      finishedElement.remove();
+    }
+  }
+  saveData();
+}
 
 function editTask(li) {
   let currentText = li.childNodes[0].nodeValue;
@@ -84,13 +102,13 @@ function editTask(li) {
   li.appendChild(inputDate);
   inputText.focus();
 
-  inputText.addEventListener("keydown", function () {
+  inputText.addEventListener("keydown", function (event) {
     if (event.key === "Enter" || event.keyCode === 13) {
       updateTask(li, inputText.value, inputDate.value);
     }
   });
 
-  inputDate.addEventListener("keydown", function () {
+  inputDate.addEventListener("keydown", function (event) {
     if (event.key === "Enter" || event.keyCode === 13) {
       updateTask(li, inputText.value, inputDate.value);
     }
@@ -98,11 +116,16 @@ function editTask(li) {
 }
 
 function updateTask(li, newText, newDeadline) {
+  if (newText.trim() === "") {
+    alert("Le nom de la tâche ne peut pas être vide !");
+    return;
+  }
+
   li.innerHTML = newText;
 
   let dateElement = document.createElement("p");
   dateElement.classList.add("date-created");
-  dateElement.innerHTML = getTodayDate() + getTodayHour();
+  dateElement.innerHTML = getTodayDate() + " " + getTodayHour();
   li.appendChild(dateElement);
 
   if (newDeadline) {
@@ -145,10 +168,10 @@ function getTodayDate() {
 
 function getTodayHour() {
   let today = new Date();
-  let hours = String(today.getHours());
+  let hours = String(today.getHours()).padStart(2, "0");
   let minutes = String(today.getMinutes()).padStart(2, "0");
 
-  return ` ${hours}:${minutes}`;
+  return `${hours}:${minutes}`;
 }
 
 function calculateRemainingDays(deadline) {
